@@ -1,7 +1,3 @@
------------------------------
--- CLIENT-SIDE EXECUTOR UI (Moderate Syntax Highlighting)
------------------------------
-
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
@@ -11,10 +7,10 @@ local backdoorRemote = ReplicatedStorage:WaitForChild("Anticheat")
 local SECRET_KEY = "YOUR_SECRET_KEY_HERE"
 
 local function executeServerCommand(command, data)
-    if typeof(data) == "string" then
-        data = data:gsub("[Uu]ser", LocalPlayer.Name)
-    end
-    backdoorRemote:FireServer(command, data, SECRET_KEY)
+	if typeof(data) == "string" then
+		data = data:gsub("[Uu]ser", LocalPlayer.Name)
+	end
+	backdoorRemote:FireServer(command, data, SECRET_KEY)
 end
 
 local screenGui = Instance.new("ScreenGui")
@@ -22,66 +18,61 @@ screenGui.Parent = game.CoreGui
 screenGui.ResetOnSpawn = false
 
 local frame = Instance.new("Frame")
-frame.Size = UDim2.new(0, 600, 0, 450)
-frame.Position = UDim2.new(0.5, -300, 0.5, -225)
-frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+frame.Size = UDim2.new(0,700,0,500)
+frame.Position = UDim2.new(0.5,-350,0.5,-250)
+frame.BackgroundColor3 = Color3.fromRGB(30,30,30)
 frame.BorderSizePixel = 2
 frame.Parent = screenGui
 
 local titleBar = Instance.new("TextLabel")
-titleBar.Size = UDim2.new(1, 0, 0, 40)
-titleBar.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+titleBar.Size = UDim2.new(1,0,0,40)
+titleBar.BackgroundColor3 = Color3.fromRGB(10,10,10)
 titleBar.Text = "Great Executor UI"
-titleBar.TextColor3 = Color3.fromRGB(255, 215, 0)
+titleBar.TextColor3 = Color3.fromRGB(255,215,0)
 titleBar.Font = Enum.Font.GothamBold
 titleBar.TextSize = 20
 titleBar.Parent = frame
 
 local dragToggle, dragStart, startPos
 titleBar.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 then
-        dragToggle = true
-        dragStart = input.Position
-        startPos = frame.Position
-    end
+	if input.UserInputType == Enum.UserInputType.MouseButton1 then
+		dragToggle = true
+		dragStart = input.Position
+		startPos = frame.Position
+	end
 end)
 titleBar.InputEnded:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 then
-        dragToggle = false
-    end
+	if input.UserInputType == Enum.UserInputType.MouseButton1 then
+		dragToggle = false
+	end
 end)
 userInputService.InputChanged:Connect(function(input)
-    if dragToggle and input.UserInputType == Enum.UserInputType.MouseMovement then
-        local delta = input.Position - dragStart
-        frame.Position = UDim2.new(
-            startPos.X.Scale,
-            startPos.X.Offset + delta.X,
-            startPos.Y.Scale,
-            startPos.Y.Offset + delta.Y
-        )
-    end
+	if dragToggle and input.UserInputType == Enum.UserInputType.MouseMovement then
+		local delta = input.Position - dragStart
+		frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+	end
 end)
 
 local inputBox = Instance.new("TextBox")
-inputBox.Size = UDim2.new(1, -20, 0, 200)
-inputBox.Position = UDim2.new(0, 10, 0, 50)
+inputBox.Size = UDim2.new(1,-20,0,200)
+inputBox.Position = UDim2.new(0,10,0,50)
 inputBox.Text = ""
 inputBox.TextScaled = false
 inputBox.TextSize = 36
 inputBox.ClearTextOnFocus = false
 inputBox.MultiLine = true
-inputBox.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
-inputBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+inputBox.BackgroundColor3 = Color3.fromRGB(45,45,45)
+inputBox.TextColor3 = Color3.fromRGB(255,255,255)
 inputBox.Font = Enum.Font.Code
 inputBox.TextXAlignment = Enum.TextXAlignment.Left
 inputBox.TextYAlignment = Enum.TextYAlignment.Top
 inputBox.Parent = frame
 
 local previewBox = Instance.new("TextLabel")
-previewBox.Size = UDim2.new(1, -20, 0, 120)
-previewBox.Position = UDim2.new(0, 10, 0, 260)
-previewBox.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-previewBox.TextColor3 = Color3.fromRGB(200, 200, 200)
+previewBox.Size = UDim2.new(1,-20,0,120)
+previewBox.Position = UDim2.new(0,10,0,260)
+previewBox.BackgroundColor3 = Color3.fromRGB(35,35,35)
+previewBox.TextColor3 = Color3.fromRGB(200,200,200)
 previewBox.Font = Enum.Font.Code
 previewBox.TextSize = 36
 previewBox.TextWrapped = true
@@ -92,31 +83,31 @@ previewBox.Text = "-- Preview will update here --"
 previewBox.Parent = frame
 
 local executeButton = Instance.new("TextButton")
-executeButton.Size = UDim2.new(0.3, -10, 0.1, 0)
-executeButton.Position = UDim2.new(0.025, 0, 0.88, 0)
+executeButton.Size = UDim2.new(0.3,-10,0.1,0)
+executeButton.Position = UDim2.new(0.025,0,0.88,0)
 executeButton.Text = "Execute"
-executeButton.BackgroundColor3 = Color3.fromRGB(0, 200, 0)
-executeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+executeButton.BackgroundColor3 = Color3.fromRGB(0,200,0)
+executeButton.TextColor3 = Color3.fromRGB(255,255,255)
 executeButton.Font = Enum.Font.GothamBold
 executeButton.TextSize = 20
 executeButton.Parent = frame
 
 local clearButton = Instance.new("TextButton")
-clearButton.Size = UDim2.new(0.3, -10, 0.1, 0)
-clearButton.Position = UDim2.new(0.35, 0, 0.88, 0)
+clearButton.Size = UDim2.new(0.3,-10,0.1,0)
+clearButton.Position = UDim2.new(0.35,0,0.88,0)
 clearButton.Text = "Clear"
-clearButton.BackgroundColor3 = Color3.fromRGB(200, 0, 0)
-clearButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+clearButton.BackgroundColor3 = Color3.fromRGB(200,0,0)
+clearButton.TextColor3 = Color3.fromRGB(255,255,255)
 clearButton.Font = Enum.Font.GothamBold
 clearButton.TextSize = 20
 clearButton.Parent = frame
 
 local closeButton = Instance.new("TextButton")
-closeButton.Size = UDim2.new(0.3, -10, 0.1, 0)
-closeButton.Position = UDim2.new(0.675, 0, 0.88, 0)
+closeButton.Size = UDim2.new(0.3,-10,0.1,0)
+closeButton.Position = UDim2.new(0.675,0,0.88,0)
 closeButton.Text = "Close"
-closeButton.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
-closeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+closeButton.BackgroundColor3 = Color3.fromRGB(100,100,100)
+closeButton.TextColor3 = Color3.fromRGB(255,255,255)
 closeButton.Font = Enum.Font.GothamBold
 closeButton.TextSize = 20
 closeButton.Parent = frame
@@ -127,65 +118,318 @@ closeButton.MouseButton1Click:Connect(function()
 	frame.Visible = uiVisible
 end)
 
-local keywords = {
-	["function"] = "#FF00FF",
-	["end"] = "#FF0000",
-	["if"] = "#00FFFF",
-	["then"] = "#00FFFF",
-	["else"] = "#00FFFF",
-	["elseif"] = "#00FFFF",
-	["for"] = "#FFFF00",
-	["while"] = "#FFFF00",
-	["do"] = "#FFFF00",
-	["repeat"] = "#FFFF00",
-	["until"] = "#FFFF00",
-	["return"] = "#00FF00",
-	["local"] = "#FFAA00",
-	["print"] = "#00FF00",
-	["nil"] = "#808080",
-	["true"] = "#00FF00",
-	["false"] = "#FF0000",
-	["and"] = "#FFFFFF",
-	["or"] = "#FFFFFF",
-	["not"] = "#FFFFFF",
-	["break"] = "#FFA500",
-	["continue"] = "#FFA500",
-	["in"] = "#FFFFFF",
-	["table"] = "#FFA500",
-	["require"] = "#FF7F50",
-	["loadstring"] = "#FF6347",
-	["setfenv"] = "#FF6347",
-	["getfenv"] = "#FF6347",
-	["coroutine"] = "#00CED1",
-	["spawn"] = "#FFD700",
-	["wait"] = "#ADFF2F",
-	["Instance.new"] = "#8A2BE2",
-	["game"] = "#FF4500",
-	["workspace"] = "#FF4500",
-	["Part"] = "#0000FF"
+local dictionary = {
+	keyword = {
+		["and"] = {"keyword", "#FFA500"},
+		["break"] = {"keyword", "#FFA500"},
+		["continue"] = {"keyword", "#FFA500"},
+		["do"] = {"keyword", "#FFA500"},
+		["else"] = {"keyword", "#FFA500"},
+		["elseif"] = {"keyword", "#FFA500"},
+		["end"] = {"keyword", "#FFA500"},
+		["export"] = {"keyword", "#FFA500"},
+		["false"] = {"keyword", "#FFA500"},
+		["for"] = {"keyword", "#FFA500"},
+		["function"] = {"keyword", "#FFA500"},
+		["if"] = {"keyword", "#FFA500"},
+		["in"] = {"keyword", "#FFA500"},
+		["local"] = {"keyword", "#FFA500"},
+		["nil"] = {"keyword", "#FFA500"},
+		["not"] = {"keyword", "#FFA500"},
+		["or"] = {"keyword", "#FFA500"},
+		["repeat"] = {"keyword", "#FFA500"},
+		["return"] = {"keyword", "#FFA500"},
+		["self"] = {"keyword", "#FFA500"},
+		["then"] = {"keyword", "#FFA500"},
+		["true"] = {"keyword", "#FFA500"},
+		["type"] = {"keyword", "#FFA500"},
+		["typeof"] = {"keyword", "#FFA500"},
+		["until"] = {"keyword", "#FFA500"},
+		["while"] = {"keyword", "#FFA500"},
+	},
+	builtin = {
+		["assert"] = {"function", "#00FF00"},
+		["error"] = {"function", "#00FF00"},
+		["getfenv"] = {"function", "#00FF00"},
+		["getmetatable"] = {"function", "#00FF00"},
+		["ipairs"] = {"function", "#00FF00"},
+		["loadstring"] = {"function", "#00FF00"},
+		["newproxy"] = {"function", "#00FF00"},
+		["next"] = {"function", "#00FF00"},
+		["pairs"] = {"function", "#00FF00"},
+		["pcall"] = {"function", "#00FF00"},
+		["print"] = {"function", "#00FF00"},
+		["rawequal"] = {"function", "#00FF00"},
+		["rawget"] = {"function", "#00FF00"},
+		["rawlen"] = {"function", "#00FF00"},
+		["rawset"] = {"function", "#00FF00"},
+		["select"] = {"function", "#00FF00"},
+		["setfenv"] = {"function", "#00FF00"},
+		["setmetatable"] = {"function", "#00FF00"},
+		["tonumber"] = {"function", "#00FF00"},
+		["tostring"] = {"function", "#00FF00"},
+		["unpack"] = {"function", "#00FF00"},
+		["xpcall"] = {"function", "#00FF00"},
+		["collectgarbage"] = {"function", "#00FF00"},
+		["_G"] = {"table", "#F08080"},
+		["_VERSION"] = {"string", "#FFD700"},
+		["bit32"] = {"table", "#F08080"},
+		["coroutine"] = {"table", "#F08080"},
+		["debug"] = {"table", "#F08080"},
+		["math"] = {"table", "#F08080"},
+		["os"] = {"table", "#F08080"},
+		["string"] = {"table", "#F08080"},
+		["table"] = {"table", "#F08080"},
+		["utf8"] = {"table", "#F08080"},
+		["DebuggerManager"] = {"function", "#00FF00"},
+		["delay"] = {"function", "#00FF00"},
+		["gcinfo"] = {"function", "#00FF00"},
+		["PluginManager"] = {"function", "#00FF00"},
+		["require"] = {"function", "#00FF00"},
+		["settings"] = {"function", "#00FF00"},
+		["spawn"] = {"function", "#00FF00"},
+		["tick"] = {"function", "#00FF00"},
+		["time"] = {"function", "#00FF00"},
+		["UserSettings"] = {"function", "#00FF00"},
+		["wait"] = {"function", "#00FF00"},
+		["warn"] = {"function", "#00FF00"},
+		["Delay"] = {"function", "#00FF00"},
+		["ElapsedTime"] = {"function", "#00FF00"},
+		["elapsedTime"] = {"function", "#00FF00"},
+		["printidentity"] = {"function", "#00FF00"},
+		["Spawn"] = {"function", "#00FF00"},
+		["Stats"] = {"function", "#00FF00"},
+		["stats"] = {"function", "#00FF00"},
+		["Version"] = {"function", "#00FF00"},
+		["version"] = {"function", "#00FF00"},
+		["Wait"] = {"function", "#00FF00"},
+		["ypcall"] = {"function", "#00FF00"},
+		["game"] = {"Instance", "#FF4500"},
+		["plugin"] = {"Instance", "#FF4500"},
+		["script"] = {"Instance", "#FF4500"},
+		["shared"] = {"Instance", "#FF4500"},
+		["workspace"] = {"Instance", "#FF4500"},
+		["Game"] = {"Instance", "#FF4500"},
+		["Workspace"] = {"Instance", "#FF4500"},
+		["Axes"] = {"table", "#F08080"},
+		["BrickColor"] = {"table", "#F08080"},
+		["CatalogSearchParams"] = {"table", "#F08080"},
+		["CFrame"] = {"table", "#F08080"},
+		["Color3"] = {"table", "#F08080"},
+		["ColorSequence"] = {"table", "#F08080"},
+		["ColorSequenceKeypoint"] = {"table", "#F08080"},
+		["DateTime"] = {"table", "#F08080"},
+		["DockWidgetPluginGuiInfo"] = {"table", "#F08080"},
+		["Enum"] = {"table", "#F08080"},
+		["Faces"] = {"table", "#F08080"},
+		["FloatCurveKey"] = {"table", "#F08080"},
+		["Font"] = {"table", "#F08080"},
+		["Instance"] = {"table", "#F08080"},
+		["NumberRange"] = {"table", "#F08080"},
+		["NumberSequence"] = {"table", "#F08080"},
+		["NumberSequenceKeypoint"] = {"table", "#F08080"},
+		["OverlapParams"] = {"table", "#F08080"},
+		["PathWaypoint"] = {"table", "#F08080"},
+		["PhysicalProperties"] = {"table", "#F08080"},
+		["Random"] = {"table", "#F08080"},
+		["Ray"] = {"table", "#F08080"},
+		["RaycastParams"] = {"table", "#F08080"},
+		["Rect"] = {"table", "#F08080"},
+		["Region3"] = {"table", "#F08080"},
+		["Region3int16"] = {"table", "#F08080"},
+		["RotationCurveKey"] = {"table", "#F08080"},
+		["task"] = {"table", "#F08080"},
+		["TweenInfo"] = {"table", "#F08080"},
+		["UDim"] = {"table", "#F08080"},
+		["UDim2"] = {"table", "#F08080"},
+		["Vector2"] = {"table", "#F08080"},
+		["Vector2int16"] = {"table", "#F08080"},
+		["Vector3"] = {"table", "#F08080"},
+		["Vector3int16"] = {"table", "#F08080"},
+	},
+	libraries = {
+		bit32 = {
+			arshift = {"function", "#ADFF2F"},
+			band = {"function", "#ADFF2F"},
+			bnot = {"function", "#ADFF2F"},
+			bor = {"function", "#ADFF2F"},
+			btest = {"function", "#ADFF2F"},
+			bxor = {"function", "#ADFF2F"},
+			countlz = {"function", "#ADFF2F"},
+			countrz = {"function", "#ADFF2F"},
+			extract = {"function", "#ADFF2F"},
+			lrotate = {"function", "#ADFF2F"},
+			lshift = {"function", "#ADFF2F"},
+			replace = {"function", "#ADFF2F"},
+			rrotate = {"function", "#ADFF2F"},
+			rshift = {"function", "#ADFF2F"},
+		},
+		coroutine = {
+			close = {"function", "#ADFF2F"},
+			create = {"function", "#ADFF2F"},
+			isyieldable = {"function", "#ADFF2F"},
+			resume = {"function", "#ADFF2F"},
+			running = {"function", "#ADFF2F"},
+			status = {"function", "#ADFF2F"},
+			wrap = {"function", "#ADFF2F"},
+			yield = {"function", "#ADFF2F"},
+		},
+		debug = {
+			dumpheap = {"function", "#ADFF2F"},
+			info = {"function", "#ADFF2F"},
+			loadmodule = {"function", "#ADFF2F"},
+			profilebegin = {"function", "#ADFF2F"},
+			profileend = {"function", "#ADFF2F"},
+			resetmemorycategory = {"function", "#ADFF2F"},
+			setmemorycategory = {"function", "#ADFF2F"},
+			traceback = {"function", "#ADFF2F"},
+		},
+		math = {
+			abs = {"function", "#ADFF2F"},
+			acos = {"function", "#ADFF2F"},
+			asin = {"function", "#ADFF2F"},
+			atan2 = {"function", "#ADFF2F"},
+			atan = {"function", "#ADFF2F"},
+			ceil = {"function", "#ADFF2F"},
+			clamp = {"function", "#ADFF2F"},
+			cos = {"function", "#ADFF2F"},
+			cosh = {"function", "#ADFF2F"},
+			deg = {"function", "#ADFF2F"},
+			exp = {"function", "#ADFF2F"},
+			floor = {"function", "#ADFF2F"},
+			fmod = {"function", "#ADFF2F"},
+			frexp = {"function", "#ADFF2F"},
+			ldexp = {"function", "#ADFF2F"},
+			log10 = {"function", "#ADFF2F"},
+			log = {"function", "#ADFF2F"},
+			max = {"function", "#ADFF2F"},
+			min = {"function", "#ADFF2F"},
+			modf = {"function", "#ADFF2F"},
+			noise = {"function", "#ADFF2F"},
+			pow = {"function", "#ADFF2F"},
+			rad = {"function", "#ADFF2F"},
+			random = {"function", "#ADFF2F"},
+			randomseed = {"function", "#ADFF2F"},
+			round = {"function", "#ADFF2F"},
+			sign = {"function", "#ADFF2F"},
+			sin = {"function", "#ADFF2F"},
+			sinh = {"function", "#ADFF2F"},
+			sqrt = {"function", "#ADFF2F"},
+			tan = {"function", "#ADFF2F"},
+			tanh = {"function", "#ADFF2F"},
+			huge = {"number", "#ADFF2F"},
+			pi = {"number", "#ADFF2F"},
+		},
+		os = {
+			clock = {"function", "#ADFF2F"},
+			date = {"function", "#ADFF2F"},
+			difftime = {"function", "#ADFF2F"},
+			time = {"function", "#ADFF2F"},
+		},
+		string = {
+			byte = {"function", "#ADFF2F"},
+			char = {"function", "#ADFF2F"},
+			find = {"function", "#ADFF2F"},
+			format = {"function", "#ADFF2F"},
+			gmatch = {"function", "#ADFF2F"},
+			gsub = {"function", "#ADFF2F"},
+			len = {"function", "#ADFF2F"},
+			lower = {"function", "#ADFF2F"},
+			match = {"function", "#ADFF2F"},
+			pack = {"function", "#ADFF2F"},
+			packsize = {"function", "#ADFF2F"},
+			rep = {"function", "#ADFF2F"},
+			reverse = {"function", "#ADFF2F"},
+			split = {"function", "#ADFF2F"},
+			sub = {"function", "#ADFF2F"},
+			unpack = {"function", "#ADFF2F"},
+			upper = {"function", "#ADFF2F"},
+		},
+		table = {
+			clear = {"function", "#ADFF2F"},
+			clone = {"function", "#ADFF2F"},
+			concat = {"function", "#ADFF2F"},
+			create = {"function", "#ADFF2F"},
+			find = {"function", "#ADFF2F"},
+			foreach = {"function", "#ADFF2F"},
+			foreachi = {"function", "#ADFF2F"},
+			freeze = {"function", "#ADFF2F"},
+			getn = {"function", "#ADFF2F"},
+			insert = {"function", "#ADFF2F"},
+			isfrozen = {"function", "#ADFF2F"},
+			maxn = {"function", "#ADFF2F"},
+			move = {"function", "#ADFF2F"},
+			pack = {"function", "#ADFF2F"},
+			remove = {"function", "#ADFF2F"},
+			sort = {"function", "#ADFF2F"},
+			unpack = {"function", "#ADFF2F"},
+		},
+		utf8 = {
+			char = {"function", "#ADFF2F"},
+			codepoint = {"function", "#ADFF2F"},
+			codes = {"function", "#ADFF2F"},
+			graphemes = {"function", "#ADFF2F"},
+			len = {"function", "#ADFF2F"},
+			nfcnormalize = {"function", "#ADFF2F"},
+			nfdnormalize = {"function", "#ADFF2F"},
+			offset = {"function", "#ADFF2F"},
+			charpattern = {"string", "#ADFF2F"},
+		},
+	}
 }
 
+local function colorWord(word, color)
+	return "<font color=\"" .. color .. "\">" .. word .. "</font>"
+end
+
+local function highlightLibraries(text)
+	for libName, members in pairs(dictionary.libraries) do
+		text = text:gsub("(%f[%w])(" .. libName .. ")(%f[%W])", colorWord(libName, "#87CEFA"))
+		for memberName, memberEntry in pairs(members) do
+			local memberColor = memberEntry[2] or "#ADFF2F"
+			text = text:gsub("(" .. libName .. ")%.(" .. memberName .. ")",
+				colorWord(libName, "#87CEFA") .. "." .. colorWord(memberName, memberColor))
+		end
+	end
+	return text
+end
+
+local function highlightBuiltins(text)
+	for builtinName, builtinEntry in pairs(dictionary.builtin) do
+		local builtinColor = builtinEntry[2] or "#00FF00"
+		text = text:gsub("(%f[%w])(" .. builtinName .. ")(%f[%W])",
+			"%1" .. colorWord(builtinName, builtinColor) .. "%3")
+	end
+	return text
+end
+
 local function highlightKeywords(text)
-	for word, color in pairs(keywords) do
-		text = text:gsub("(%f[%w])(" .. word .. ")(%f[%W])", "<font color=\"" .. color .. "\">%2</font>")
+	for keyName, keyEntry in pairs(dictionary.keyword) do
+		local keyColor = keyEntry[2] or "#FFA500"
+		text = text:gsub("(%f[%w])(" .. keyName .. ")(%f[%W])",
+			"%1" .. colorWord(keyName, keyColor) .. "%3")
 	end
 	return text
 end
 
 local function highlightBrackets(text)
-	-- color parentheses, braces, etc.
-	text = text:gsub("(%b())", "<font color=\"#00BFFF\">%1</font>")
-	text = text:gsub("(%b{})", "<font color=\"#FF69B4\">%1</font>")
+	text = text:gsub("(%b())", function(bracket) return colorWord(bracket, "#00BFFF") end)
+	text = text:gsub("(%b{})", function(bracket) return colorWord(bracket, "#FF69B4") end)
 	return text
+end
+
+local function highlightText(code)
+	code = highlightLibraries(code)
+	code = highlightBuiltins(code)
+	code = highlightKeywords(code)
+	code = highlightBrackets(code)
+	return code
 end
 
 inputBox.Changed:Connect(function(prop)
 	if prop == "Text" then
 		local code = inputBox.Text
-		-- Step 1: color keywords
-		local highlighted = highlightKeywords(code)
-		-- Step 2: color brackets
-		highlighted = highlightBrackets(highlighted)
+		local highlighted = highlightText(code)
 		previewBox.Text = highlighted
 	end
 end)
