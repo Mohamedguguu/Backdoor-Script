@@ -53,21 +53,30 @@ userInputService.InputChanged:Connect(function(input)
 	end
 end)
 
+local inputScroll = Instance.new("ScrollingFrame")
+inputScroll.Size = UDim2.new(1,-20,0,200)
+inputScroll.Position = UDim2.new(0,10,0,50)
+inputScroll.BackgroundColor3 = Color3.fromRGB(45,45,45)
+inputScroll.BorderSizePixel = 0
+inputScroll.CanvasSize = UDim2.new(0,0,0,400)
+inputScroll.ScrollBarThickness = 8
+inputScroll.Parent = frame
+
 local inputBox = Instance.new("TextBox")
-inputBox.Size = UDim2.new(1,-20,0,200)
-inputBox.Position = UDim2.new(0,10,0,50)
+inputBox.Size = UDim2.new(1, -10, 1, 0)
+inputBox.Position = UDim2.new(0,5,0,0)
 inputBox.Text = ""
 inputBox.TextScaled = false
 inputBox.TextSize = 36
 inputBox.ClearTextOnFocus = false
 inputBox.MultiLine = true
 inputBox.TextWrapped = true
-inputBox.BackgroundColor3 = Color3.fromRGB(45,45,45)
+inputBox.BackgroundTransparency = 1
 inputBox.TextColor3 = Color3.fromRGB(255,255,255)
 inputBox.Font = Enum.Font.Code
 inputBox.TextXAlignment = Enum.TextXAlignment.Left
 inputBox.TextYAlignment = Enum.TextYAlignment.Top
-inputBox.Parent = frame
+inputBox.Parent = inputScroll
 
 local previewBox = Instance.new("TextLabel")
 previewBox.Size = UDim2.new(1,-20,0,120)
@@ -307,7 +316,7 @@ local dictionary = {
 			min = {"function", "#ADFF2F"},
 			modf = {"function", "#ADFF2F"},
 			noise = {"function", "#ADFF2F"},
-			pow = {"function", "#ADFF2F"},
+			pow = {"function", "#ADFF2G"}, -- fix typo later
 			rad = {"function", "#ADFF2F"},
 			random = {"function", "#ADFF2F"},
 			randomseed = {"function", "#ADFF2F"},
