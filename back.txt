@@ -61,6 +61,7 @@ inputBox.TextScaled = false
 inputBox.TextSize = 36
 inputBox.ClearTextOnFocus = false
 inputBox.MultiLine = true
+inputBox.TextWrapped = true
 inputBox.BackgroundColor3 = Color3.fromRGB(45,45,45)
 inputBox.TextColor3 = Color3.fromRGB(255,255,255)
 inputBox.Font = Enum.Font.Code
@@ -418,12 +419,39 @@ local function highlightBrackets(text)
 	return text
 end
 
+local function highlightUnknown(text, original)
+	local known = {}
+	for k, _ in pairs(dictionary.keyword) do known[k] = true end
+	for k, _ in pairs(dictionary.builtin) do known[k] = true end
+	for k, _ in pairs(dictionary.libraries) do known[k] = true end
+	for lib, members in pairs(dictionary.libraries) do
+		for member, _ in pairs(members) do
+			known[member] = true
+		end
+	end
+	local functionCallPattern = "([%a_][%w_]*)%s*%("
+	for word in original:gmatch(functionCallPattern) do
+		if not known[word] then
+			text = text:gsub("(%f[%w])(" .. word .. ")(%s*%()", "%1" .. colorWord(word, "#FF0000") .. "%3")
+		end
+	end
+	return text
+end
+
+local function highlightSpecial(text)
+	text = text:gsub("---(%w+)", colorWord("%1", "#006400"))
+	return text
+end
+
 local function highlightText(code)
-	code = highlightLibraries(code)
-	code = highlightBuiltins(code)
-	code = highlightKeywords(code)
-	code = highlightBrackets(code)
-	return code
+	local hl = code
+	hl = highlightLibraries(hl)
+	hl = highlightBuiltins(hl)
+	hl = highlightKeywords(hl)
+	hl = highlightBrackets(hl)
+	hl = highlightUnknown(hl, code)
+	hl = highlightSpecial(hl)
+	return hl
 end
 
 inputBox.Changed:Connect(function(prop)
