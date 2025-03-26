@@ -141,7 +141,28 @@ local keywords = {
 	["until"] = "#FFFF00",
 	["return"] = "#00FF00",
 	["local"] = "#FFAA00",
-	["print"] = "#00FF00"
+	["print"] = "#00FF00",
+	["nil"] = "#808080",
+	["true"] = "#00FF00",
+	["false"] = "#FF0000",
+	["and"] = "#FFFFFF",
+	["or"] = "#FFFFFF",
+	["not"] = "#FFFFFF",
+	["break"] = "#FFA500",
+	["continue"] = "#FFA500",
+	["in"] = "#FFFFFF",
+	["table"] = "#FFA500",
+	["require"] = "#FF7F50",
+	["loadstring"] = "#FF6347",
+	["setfenv"] = "#FF6347",
+	["getfenv"] = "#FF6347",
+	["coroutine"] = "#00CED1",
+	["spawn"] = "#FFD700",
+	["wait"] = "#ADFF2F",
+	["Instance.new"] = "#8A2BE2",
+	["game"] = "#FF4500",
+	["workspace"] = "#FF4500",
+	["Part"] = "#0000FF"
 }
 
 local function highlightKeywords(text)
